@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login Admin</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .glass {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    .modal {
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+    .modal-enter {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    .modal-active {
+      opacity: 1;
+      transform: scale(1);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-600 via-pink-500 to-red-500">
+
+  <!-- Login Container -->
+  <div class="glass rounded-2xl shadow-2xl p-8 w-full max-w-md text-white z-10">
+    <h2 class="text-3xl font-bold text-center mb-6">Welcome Back, Admin</h2>
+
+    <div class="space-y-4">
+      <input id="login2-input" type="text" placeholder="Email atau Nomor HP"
+        class="w-full px-4 py-3 rounded-xl bg-white/20 placeholder-white/80 text-white focus:outline-none focus:ring-2 focus:ring-yellow-300"/>
+
+      <div class="relative">
+        <input id="login2-password" type="password" placeholder="Password"
+          class="w-full px-4 py-3 rounded-xl bg-white/20 placeholder-white/80 text-white focus:outline-none focus:ring-2 focus:ring-yellow-300"/>
+        <button onclick="togglePassword2()" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-sm text-yellow-200">Show</button>
+      </div>
+
+      <div class="flex justify-end text-sm text-yellow-200">
+        <a href="#" onclick="showModal2()" class="hover:underline">Lupa Password?</a>
+      </div>
+
+      <button onclick="submitLogin2()" class="w-full bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-bold py-3 rounded-xl transition">
+        Login Sekarang
+      </button>
+    </div>
+  </div>
+
+  <!-- Modal Alert -->
+  <div id="response-modal2" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-30">
+    <div id="response-box2" class="bg-white rounded-xl shadow-2xl p-6 max-w-sm w-full text-center text-gray-800 modal modal-enter">
+      <div id="response-icon2" class="text-4xl mb-2">✔️</div>
+      <h3 id="response-title2" class="text-xl font-semibold mb-1">Sukses</h3>
+      <p id="response-msg2" class="text-gray-600 mb-4">Login berhasil</p>
+      <button onclick="hideResponse2()" class="px-4 py-2 bg-yellow-400 hover:bg-yellow-500 text-black font-bold rounded-xl">
+        Tutup
+      </button>
+    </div>
+  </div>
+
+  <!-- Coming Soon Modal -->
+  <div id="modal2" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-30">
+    <div class="bg-white rounded-xl shadow-lg p-6 max-w-sm w-full text-center modal modal-enter">
+      <h3 class="text-xl font-bold text-gray-800 mb-2">Coming Soon</h3>
+      <p class="text-gray-600 mb-4">Fitur ini sedang dikembangkan.</p>
+      <button onclick="hideModal2()" class="mt-2 px-4 py-2 bg-yellow-400 hover:bg-yellow-500 text-black font-bold rounded-xl">
+        Tutup
+      </button>
+    </div>
+  </div>
+
+  <script>
+    function togglePassword2() {
+      const pwd = document.getElementById('login2-password');
+      const btn = event.currentTarget;
+      if (pwd.type === 'password') {
+        pwd.type = 'text';
+        btn.innerText = 'Hide';
+      } else {
+        pwd.type = 'password';
+        btn.innerText = 'Show';
+      }
+    }
+
+    function showModal2() {
+      const modal = document.getElementById('modal2');
+      const content = modal.querySelector('.modal');
+      modal.classList.remove('hidden');
+      setTimeout(() => content.classList.add('modal-active'), 10);
+    }
+
+    function hideModal2() {
+      const modal = document.getElementById('modal2');
+      const content = modal.querySelector('.modal');
+      content.classList.remove('modal-active');
+      setTimeout(() => modal.classList.add('hidden'), 300);
+    }
+
+    function showResponse2(success, message) {
+      const modal = document.getElementById('response-modal2');
+      const icon = document.getElementById('response-icon2');
+      const title = document.getElementById('response-title2');
+      const msg = document.getElementById('response-msg2');
+
+      if (success) {
+        icon.innerText = '✔️';
+        title.innerText = 'Sukses';
+        msg.innerText = message || 'Login berhasil.';
+      } else {
+        icon.innerText = '❌';
+        title.innerText = 'Gagal';
+        msg.innerText = message || 'Login gagal.';
+      }
+
+      const content = modal.querySelector('.modal');
+      modal.classList.remove('hidden');
+      setTimeout(() => content.classList.add('modal-active'), 10);
+    }
+
+    function hideResponse2() {
+      const modal = document.getElementById('response-modal2');
+      const content = modal.querySelector('.modal');
+      content.classList.remove('modal-active');
+      setTimeout(() => modal.classList.add('hidden'), 300);
+    }
+
+    function submitLogin2() {
+      const input = document.getElementById('login2-input').value.trim();
+      const password = document.getElementById('login2-password').value;
+
+      if (!input || !password) {
+        showResponse2(false, "Semua field harus diisi.");
+        return;
+      }
+
+      fetch("url", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: `email_or_phone=${encodeURIComponent(input)}&password=${encodeURIComponent(password)}`
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          showResponse2(true, "Login berhasil. Mengarahkan...");
+          setTimeout(() => {
+            window.location.href = "<?= $rootPath ?>admin/dashboard";
+          }, 1500);
+        } else {
+          showResponse2(false, data.message || "Login gagal.");
+        }
+      })
+      .catch(() => {
+        showResponse2(false, "Terjadi kesalahan jaringan.");
+      });
+    }
+  </script>
+</body>
+</html>
+
